@@ -1,4 +1,4 @@
-<Sistema de manutenção>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -50,7 +50,7 @@
     <option value="Minipc">Minipc</option>
     <option value="Datashow">Datashow</option>
     <option value="Impressora">Impressora</option>
-    <option value="Monitor">Monitor</option> <!-- Adicionado Monitor -->
+    <option value="Monitor">Monitor</option>
 </select>
 <div class="guide">* Selecione o tipo de equipamento.</div>
 <input type="text" id="machineNumber" placeholder="Número da Máquina">
@@ -84,7 +84,7 @@
     <option value="Salão Escola 01">Salão Escola 01</option>
     <option value="Salão Escola 02">Salão Escola 02</option>
     <option value="Sala Cozinha Didática">Sala Cozinha Didática</option>
-    <option value="Sala de Vidro">Sala de Vidro</option> <!-- Adicionado Sala de Vidro -->
+    <option value="Sala de Vidro">Sala de Vidro</option>
 </select>
 <div class="guide">* Selecione o setor ao qual o equipamento pertence.</div>
 <button class="button" onclick="addEquipment()">Adicionar Equipamento</button>
@@ -108,7 +108,20 @@
 </table>
 
 <script>
-    const equipmentList = [];
+    function saveEquipmentList() {
+        localStorage.setItem('equipmentList', JSON.stringify(equipmentList));
+    }
+
+    function loadEquipmentList() {
+        const storedList = localStorage.getItem('equipmentList');
+        if (storedList) {
+            return JSON.parse(storedList);
+        }
+        return [];
+    }
+
+    const equipmentList = loadEquipmentList();  // Carrega do localStorage
+    updateEquipmentTable();  // Atualiza a tabela com os dados carregados
 
     function addEquipment() {
         const type = document.getElementById('equipmentType').value;
@@ -127,6 +140,7 @@
             };
 
             equipmentList.push(equipment);
+            saveEquipmentList();  // Salva no localStorage
             updateEquipmentTable();
             clearInputs();
         } else {
@@ -186,6 +200,7 @@
             };
 
             equipmentList[index].maintenanceHistory.push(report);
+            saveEquipmentList();  // Salva no localStorage
             alert('Relatório de manutenção gerado e salvo com sucesso!');
         } else {
             alert('Por favor, preencha todos os campos de manutenção.');
@@ -198,7 +213,7 @@
         reportContent += `Número de Tombamento: ${equipmentList[index].tombNumber}\n`;
         reportContent += `Responsável: Valdir Rodrigues\n`;
         reportContent += `Função: Monitor de TI\n`;
-        reportContent += `Instituição: SENAC PAULISTA\n\n`; // Adicionado nome da instituição
+        reportContent += `Instituição: SENAC PAULISTA\n\n`;
 
         if (history.length === 0) {
             reportContent += 'Nenhum registro de manutenção encontrado.';
@@ -239,6 +254,7 @@
 
     function removeEquipment(index) {
         equipmentList.splice(index, 1);
+        saveEquipmentList();  // Salva no localStorage
         updateEquipmentTable();
     }
 
