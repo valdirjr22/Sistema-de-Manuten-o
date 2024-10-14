@@ -85,6 +85,7 @@
     <option value="Salão Escola 02">Salão Escola 02</option>
     <option value="Sala Cozinha Didática">Sala Cozinha Didática</option>
     <option value="Sala de Vidro">Sala de Vidro</option>
+    <option value="Sala do Administrativo">Sala do Administrativo</option> <!-- Nova opção adicionada -->
 </select>
 <div class="guide">* Selecione o setor ao qual o equipamento pertence.</div>
 <button class="button" onclick="addEquipment()">Adicionar Equipamento</button>
