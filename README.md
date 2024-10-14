@@ -1,4 +1,4 @@
-<Sistema de Manutenção>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -108,8 +108,11 @@
 </table>
 
 <script>
+    let osCounter = 1;  // Contador para o número da OS
+
     function saveEquipmentList() {
         localStorage.setItem('equipmentList', JSON.stringify(equipmentList));
+        localStorage.setItem('osCounter', osCounter);  // Salvar contador de OS
     }
 
     function loadEquipmentList() {
@@ -121,6 +124,7 @@
     }
 
     const equipmentList = loadEquipmentList();  // Carrega do localStorage
+    osCounter = parseInt(localStorage.getItem('osCounter')) || 1;  // Carrega contador de OS
     updateEquipmentTable();  // Atualiza a tabela com os dados carregados
 
     function addEquipment() {
@@ -168,14 +172,14 @@
                     <input type="date" id="date${index}" placeholder="Data">
                     <input type="time" id="time${index}" placeholder="Hora">
                     <textarea id="details${index}" placeholder="Descrição do que foi feito"></textarea>
-                    <button onclick="generateReport(${index})">Gerar Relatório</button>
-                    <button onclick="printReport(${index})">Imprimir Relatório</button>
+                    <button class="button" onclick="generateReport(${index})">Gerar Relatório</button>
                 </div>
             `;
             row.insertCell(5).textContent = equipment.status;
             row.insertCell(6).innerHTML = `
+                <button onclick="printReport(${index})">Imprimir Relatório</button>
                 <button onclick="removeEquipment(${index})">Remover</button>
-                <button onclick="viewMaintenanceHistory(${index})">Histórico</button>
+                <button class="button" onclick="showFullReport(${index})">Gerar Relatório</button>
             `;
         });
     }
@@ -193,6 +197,7 @@
 
         if (date && time && details) {
             const report = {
+                osNumber: `OS-${osCounter++}`,  // Gerando número da OS automaticamente
                 date,
                 time,
                 details,
@@ -207,6 +212,29 @@
         }
     }
 
+    function showFullReport(index) {
+        const history = equipmentList[index].maintenanceHistory;
+        let reportContent = `Relatório de Manutenção para ${equipmentList[index].number}:\n`;
+        reportContent += `Número de Tombamento: ${equipmentList[index].tombNumber}\n`;
+        reportContent += `Responsável: Valdir Rodrigues\n`;
+        reportContent += `Função: Monitor de TI\n`;
+        reportContent += `Instituição: SENAC PAULISTA\n\n`;
+
+        if (history.length === 0) {
+            reportContent += 'Nenhum registro de manutenção encontrado.';
+        } else {
+            history.forEach((report) => {
+                reportContent += `Relatório (OS: ${report.osNumber}):\n`;  // Incluindo o número da OS
+                reportContent += `Data: ${report.date}\n`;
+                reportContent += `Hora: ${report.time}\n`;
+                reportContent += `Descrição: ${report.details}\n`;
+                reportContent += `Próxima Manutenção: ${report.nextMaintenance}\n\n`;
+            });
+        }
+
+        alert(reportContent);  // Mostrando o conteúdo do relatório em um alerta
+    }
+
     function printReport(index) {
         const history = equipmentList[index].maintenanceHistory;
         let reportContent = `Relatório de Manutenção para ${equipmentList[index].number}:\n`;
@@ -218,8 +246,8 @@
         if (history.length === 0) {
             reportContent += 'Nenhum registro de manutenção encontrado.';
         } else {
-            history.forEach((report, i) => {
-                reportContent += `Relatório ${i + 1}:\n`;
+            history.forEach((report) => {
+                reportContent += `Relatório (OS: ${report.osNumber}):\n`;  // Incluindo o número da OS
                 reportContent += `Data: ${report.date}\n`;
                 reportContent += `Hora: ${report.time}\n`;
                 reportContent += `Descrição: ${report.details}\n`;
@@ -231,25 +259,6 @@
         printWindow.document.write('<pre>' + reportContent + '</pre>');
         printWindow.document.close();
         printWindow.print();
-    }
-
-    function viewMaintenanceHistory(index) {
-        const history = equipmentList[index].maintenanceHistory;
-        let historyContent = `Histórico de Manutenção para ${equipmentList[index].number}:\n`;
-
-        if (history.length === 0) {
-            historyContent += 'Nenhum registro de manutenção encontrado.';
-        } else {
-            history.forEach((report, i) => {
-                historyContent += `Relatório ${i + 1}:\n`;
-                historyContent += `Data: ${report.date}\n`;
-                historyContent += `Hora: ${report.time}\n`;
-                historyContent += `Descrição: ${report.details}\n`;
-                historyContent += `Próxima Manutenção: ${report.nextMaintenance}\n\n`;
-            });
-        }
-
-        alert(historyContent);
     }
 
     function removeEquipment(index) {
