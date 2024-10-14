@@ -85,10 +85,14 @@
     <option value="Salão Escola 02">Salão Escola 02</option>
     <option value="Sala Cozinha Didática">Sala Cozinha Didática</option>
     <option value="Sala de Vidro">Sala de Vidro</option>
-    <option value="Sala do Administrativo">Sala do Administrativo</option> <!-- Nova opção adicionada -->
+    <option value="Sala do Administrativo">Sala do Administrativo</option>
 </select>
 <div class="guide">* Selecione o setor ao qual o equipamento pertence.</div>
 <button class="button" onclick="addEquipment()">Adicionar Equipamento</button>
+
+<h2>Pesquisar Serviços</h2>
+<input type="text" id="searchInput" placeholder="Buscar por OS, Tombamento ou Máquina">
+<button class="button" onclick="searchEquipment()">Pesquisar</button>
 
 <h2>Lista de Equipamentos</h2>
 <table id="equipmentTable">
@@ -154,11 +158,11 @@
         }
     }
 
-    function updateEquipmentTable() {
+    function updateEquipmentTable(filteredList = equipmentList) {
         const tableBody = document.getElementById('equipmentTable').getElementsByTagName('tbody')[0];
         tableBody.innerHTML = '';
 
-        equipmentList.forEach((equipment, index) => {
+        filteredList.forEach((equipment, index) => {
             const row = tableBody.insertRow();
             row.insertCell(0).textContent = equipment.type;
             row.insertCell(1).textContent = equipment.number;
@@ -281,6 +285,16 @@
         document.getElementById('machineNumber').value = '';
         document.getElementById('tombNumber').value = '';
         document.getElementById('sector').value = '';
+    }
+
+    function searchEquipment() {
+        const searchValue = document.getElementById('searchInput').value.toLowerCase();
+        const filteredList = equipmentList.filter(equipment => 
+            equipment.number.toLowerCase().includes(searchValue) || 
+            equipment.tombNumber.toLowerCase().includes(searchValue) || 
+            (equipment.osNumber && equipment.osNumber.toLowerCase().includes(searchValue))
+        );
+        updateEquipmentTable(filteredList);
     }
 </script>
 
