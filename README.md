@@ -140,7 +140,8 @@
                 tombNumber,
                 sector,
                 maintenanceHistory: [],
-                status: 'Ativo'
+                status: 'Ativo',
+                osNumber: null  // Inicializa como nulo
             };
 
             equipmentList.push(equipment);
@@ -162,6 +163,7 @@
             row.insertCell(1).textContent = equipment.number;
             row.insertCell(2).textContent = equipment.tombNumber;
             row.insertCell(3).textContent = equipment.sector;
+
             row.insertCell(4).innerHTML = `
                 <select onchange="updateMaintenanceType(${index}, this.value)">
                     <option value="">Selecione</option>
@@ -175,7 +177,10 @@
                     <button class="button" onclick="generateReport(${index})">Gerar Relatório</button>
                 </div>
             `;
-            row.insertCell(5).textContent = equipment.status;
+            
+            // Exibindo o status com o número da OS, se existir
+            row.insertCell(5).textContent = equipment.status + (equipment.osNumber ? ` (OS: ${equipment.osNumber})` : '');
+
             row.insertCell(6).innerHTML = `
                 <button onclick="printReport(${index})">Imprimir Relatório</button>
                 <button onclick="removeEquipment(${index})">Remover</button>
@@ -205,7 +210,10 @@
             };
 
             equipmentList[index].maintenanceHistory.push(report);
+            equipmentList[index].osNumber = report.osNumber;  // Atualiza o número da OS
+            equipmentList[index].status = 'Ativo';  // Atualiza o status
             saveEquipmentList();  // Salva no localStorage
+            updateEquipmentTable();  // Atualiza a tabela
             alert('Relatório de manutenção gerado e salvo com sucesso!');
         } else {
             alert('Por favor, preencha todos os campos de manutenção.');
