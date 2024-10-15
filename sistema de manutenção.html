@@ -146,7 +146,8 @@
                 sector,
                 maintenanceHistory: [],
                 status: 'Ativo',
-                osNumber: null  // Inicializa como nulo
+                osNumber: null,  // Inicializa como nulo
+                maintenanceType: null  // Adicionando campo para tipo de manutenção
             };
 
             equipmentList.push(equipment);
@@ -211,6 +212,7 @@
                 date,
                 time,
                 details,
+                maintenanceType: equipmentList[index].maintenanceType,
                 nextMaintenance: new Date(new Date(date).getTime() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString()
             };
 
@@ -237,38 +239,35 @@
             reportContent += 'Nenhum registro de manutenção encontrado.';
         } else {
             history.forEach((report) => {
-                reportContent += `Relatório (OS: ${report.osNumber}):\n`;  // Incluindo o número da OS
+                reportContent += `Relatório (OS: ${report.osNumber}):\n`;
                 reportContent += `Data: ${report.date}\n`;
                 reportContent += `Hora: ${report.time}\n`;
+                reportContent += `Tipo: ${report.maintenanceType}\n`;  // Incluindo o tipo de manutenção
                 reportContent += `Descrição: ${report.details}\n`;
                 reportContent += `Próxima Manutenção: ${report.nextMaintenance}\n\n`;
             });
         }
 
-        alert(reportContent);  // Mostrando o conteúdo do relatório em um alerta
+        alert(reportContent);
     }
 
     function printReport(index) {
         const history = equipmentList[index].maintenanceHistory;
-        let reportContent = `Relatório de Manutenção para ${equipmentList[index].number}:\n`;
-        reportContent += `Número de Tombamento: ${equipmentList[index].tombNumber}\n`;
-        reportContent += `Responsável: Valdir Rodrigues\n`;
-        reportContent += `Função: Monitor de TI\n`;
-        reportContent += `Instituição: SENAC PAULISTA\n\n`;
+        let reportContent = `Equipamento: ${equipmentList[index].number}\n`;
+        reportContent += `Tombamento: ${equipmentList[index].tombNumber}\n`;
+        reportContent += `Tipo de Manutenção: ${history.length ? history[history.length - 1].maintenanceType : 'N/A'}\n`;  // Tipo da última manutenção
+        reportContent += `OS: ${equipmentList[index].osNumber || 'N/A'}\n`;
 
-        if (history.length === 0) {
-            reportContent += 'Nenhum registro de manutenção encontrado.';
+        if (history.length > 0) {
+            const lastReport = history[history.length - 1];
+            reportContent += `Data: ${lastReport.date} - Hora: ${lastReport.time}\n`;
+            reportContent += `Desc: ${lastReport.details}\n`;
+            reportContent += `Próx. Manutenção: ${lastReport.nextMaintenance}\n`;
         } else {
-            history.forEach((report) => {
-                reportContent += `Relatório (OS: ${report.osNumber}):\n`;  // Incluindo o número da OS
-                reportContent += `Data: ${report.date}\n`;
-                reportContent += `Hora: ${report.time}\n`;
-                reportContent += `Descrição: ${report.details}\n`;
-                reportContent += `Próxima Manutenção: ${report.nextMaintenance}\n\n`;
-            });
+            reportContent += 'Nenhum registro de manutenção encontrado.';
         }
 
-        const printWindow = window.open('', '', 'width=600,height=400');
+        const printWindow = window.open('', '', 'width=300,height=200');
         printWindow.document.write('<pre>' + reportContent + '</pre>');
         printWindow.document.close();
         printWindow.print();
