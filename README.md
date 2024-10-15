@@ -197,7 +197,7 @@
     function updateMaintenanceType(index, type) {
         equipmentList[index].maintenanceType = type;
         const detailsDiv = document.getElementById(`maintenanceDetails${index}`);
-        detailsDiv.style.display = type === 'Preventiva' ? 'block' : 'none';
+        detailsDiv.style.display = type ? 'block' : 'none';  // Exibe os detalhes se um tipo for selecionado
     }
 
     function generateReport(index) {
