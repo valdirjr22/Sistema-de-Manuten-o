@@ -94,6 +94,7 @@
 <input type="text" id="searchInput" placeholder="Buscar por OS, Tombamento ou Máquina">
 <button class="button" onclick="searchEquipment()">Pesquisar</button>
 <button class="button" onclick="showGeneralHistory()">Histórico Geral</button>
+<button class="button" onclick="printGeneralHistory()">Imprimir Histórico Geral</button> <!-- Novo botão -->
 
 <h2>Lista de Equipamentos</h2>
 <table id="equipmentTable">
@@ -185,7 +186,6 @@
                 </div>
             `;
 
-            // Exibindo o status com o número da OS, se existir
             row.insertCell(5).textContent = equipment.status + (equipment.osNumber ? ` (OS: ${equipment.osNumber})` : '');
 
             row.insertCell(6).innerHTML = `
@@ -200,7 +200,7 @@
     function updateMaintenanceType(index, type) {
         equipmentList[index].maintenanceType = type;
         const detailsDiv = document.getElementById(`maintenanceDetails${index}`);
-        detailsDiv.style.display = type ? 'block' : 'none';  // Exibe os detalhes se um tipo for selecionado
+        detailsDiv.style.display = type ? 'block' : 'none';
     }
 
     function generateReport(index) {
@@ -210,7 +210,7 @@
 
         if (date && time && details) {
             const report = {
-                osNumber: `OS-${osCounter++}`,  // Gerando número da OS automaticamente
+                osNumber: `OS-${osCounter++}`,
                 date,
                 time,
                 details,
@@ -219,10 +219,10 @@
             };
 
             equipmentList[index].maintenanceHistory.push(report);
-            equipmentList[index].osNumber = report.osNumber;  // Atualiza o número da OS
-            equipmentList[index].status = 'Ativo';  // Atualiza o status
-            saveEquipmentList();  // Salva no localStorage
-            updateEquipmentTable();  // Atualiza a tabela
+            equipmentList[index].osNumber = report.osNumber;
+            equipmentList[index].status = 'Ativo';
+            saveEquipmentList();
+            updateEquipmentTable();
             alert('Relatório de manutenção gerado e salvo com sucesso!');
         } else {
             alert('Por favor, preencha todos os campos de manutenção.');
@@ -244,7 +244,7 @@
                 reportContent += `Relatório (OS: ${report.osNumber}):\n`;
                 reportContent += `Data: ${report.date}\n`;
                 reportContent += `Hora: ${report.time}\n`;
-                reportContent += `Tipo: ${report.maintenanceType}\n`;  // Incluindo o tipo de manutenção
+                reportContent += `Tipo: ${report.maintenanceType}\n`;
                 reportContent += `Descrição: ${report.details}\n`;
                 reportContent += `Próxima Manutenção: ${report.nextMaintenance}\n\n`;
             });
@@ -277,7 +277,7 @@
         const history = equipmentList[index].maintenanceHistory;
         let reportContent = `Equipamento: ${equipmentList[index].number}\n`;
         reportContent += `Tombamento: ${equipmentList[index].tombNumber}\n`;
-        reportContent += `Tipo de Manutenção: ${history.length ? history[history.length - 1].maintenanceType : 'N/A'}\n`;  // Tipo da última manutenção
+        reportContent += `Tipo de Manutenção: ${history.length ? history[history.length - 1].maintenanceType : 'N/A'}\n`;
         reportContent += `OS: ${equipmentList[index].osNumber || 'N/A'}\n`;
 
         if (history.length > 0) {
@@ -297,7 +297,7 @@
 
     function removeEquipment(index) {
         equipmentList.splice(index, 1);
-        saveEquipmentList();  // Salva no localStorage
+        saveEquipmentList();
         updateEquipmentTable();
     }
 
@@ -342,6 +342,35 @@
         }
 
         alert(generalHistory);
+    }
+
+    function printGeneralHistory() {
+        let generalHistory = 'Histórico Geral de Manutenção:\n\n';
+        let hasHistory = false;
+
+        equipmentList.forEach(equipment => {
+            if (equipment.maintenanceHistory.length > 0) {
+                hasHistory = true;
+                generalHistory += `Equipamento: ${equipment.number} (Tombamento: ${equipment.tombNumber})\n`;
+                equipment.maintenanceHistory.forEach(report => {
+                    generalHistory += `  OS: ${report.osNumber}\n`;
+                    generalHistory += `  Data: ${report.date}\n`;
+                    generalHistory += `  Hora: ${report.time}\n`;
+                    generalHistory += `  Tipo: ${report.maintenanceType}\n`;
+                    generalHistory += `  Descrição: ${report.details}\n`;
+                    generalHistory += `  Próxima Manutenção: ${report.nextMaintenance}\n\n`;
+                });
+            }
+        });
+
+        if (!hasHistory) {
+            generalHistory = 'Nenhum registro de manutenção encontrado.';
+        }
+
+        const printWindow = window.open('', '', 'width=600,height=400');
+        printWindow.document.write('<pre>' + generalHistory + '</pre>');
+        printWindow.document.close();
+        printWindow.print();
     }
 </script>
 
