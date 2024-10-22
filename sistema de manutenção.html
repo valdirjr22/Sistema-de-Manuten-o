@@ -8,22 +8,38 @@
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        h1, h2 {
+            color: #2c3e50;
         }
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
         th, td {
             border: 1px solid #ddd;
-            padding: 8px;
+            padding: 12px;
             text-align: center;
         }
         th {
-            background-color: #f2f2f2;
+            background-color: #3498db;
+            color: white;
         }
         .button {
-            margin: 5px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background-color: #2980b9;
         }
         .guide {
             font-size: 0.9em;
@@ -33,6 +49,16 @@
         .maintenance-details {
             display: none;
             margin-top: 10px;
+            background-color: #ecf0f1;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        input[type="text"], select {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
         }
     </style>
 </head>
@@ -94,7 +120,7 @@
 <input type="text" id="searchInput" placeholder="Buscar por OS, Tombamento ou Máquina">
 <button class="button" onclick="searchEquipment()">Pesquisar</button>
 <button class="button" onclick="showGeneralHistory()">Histórico Geral</button>
-<button class="button" onclick="printGeneralHistory()">Imprimir Histórico Geral</button> <!-- Novo botão -->
+<button class="button" onclick="printGeneralHistory()">Imprimir Histórico Geral</button>
 
 <h2>Lista de Equipamentos</h2>
 <table id="equipmentTable">
@@ -179,8 +205,8 @@
                     <option value="Corretiva">Corretiva</option>
                 </select>
                 <div id="maintenanceDetails${index}" class="maintenance-details">
-                    <input type="date" id="date${index}" placeholder="Data">
-                    <input type="time" id="time${index}" placeholder="Hora">
+                    <input type="date" id="date${index}">
+                    <input type="time" id="time${index}">
                     <textarea id="details${index}" placeholder="Descrição do que foi feito"></textarea>
                     <button class="button" onclick="generateReport(${index})">Gerar Relatório</button>
                 </div>
@@ -189,8 +215,8 @@
             row.insertCell(5).textContent = equipment.status + (equipment.osNumber ? ` (OS: ${equipment.osNumber})` : '');
 
             row.insertCell(6).innerHTML = `
-                <button onclick="printReport(${index})">Imprimir Relatório</button>
-                <button onclick="removeEquipment(${index})">Remover</button>
+                <button class="button" onclick="printReport(${index})">Imprimir Relatório</button>
+                <button class="button" onclick="removeEquipment(${index})">Remover</button>
                 <button class="button" onclick="showFullReport(${index})">Gerar Relatório</button>
                 <button class="button" onclick="showMaintenanceHistory(${index})">Histórico</button>
             `;
