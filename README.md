@@ -1,4 +1,4 @@
-<Sistema de Manutenção>
+<Sistema de Manuteção>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -6,28 +6,37 @@
     <title>Sistema de Manutenção de Equipamentos</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
             margin: 20px;
-            background-color: #f9f9f9;
+            background-color: #f4f4f4;
             color: #333;
         }
         h1, h2 {
-            color: #2c3e50;
+            color: #34495e;
+            margin-bottom: 10px;
         }
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+        table:hover {
+            transform: scale(1.01);
         }
         th, td {
             border: 1px solid #ddd;
             padding: 12px;
             text-align: center;
+            transition: background-color 0.3s;
         }
         th {
             background-color: #3498db;
             color: white;
+        }
+        tr:hover {
+            background-color: #ecf0f1;
         }
         .button {
             background-color: #3498db;
@@ -36,10 +45,11 @@
             padding: 10px 15px;
             cursor: pointer;
             border-radius: 5px;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, transform 0.2s;
         }
         .button:hover {
             background-color: #2980b9;
+            transform: translateY(-2px);
         }
         .guide {
             font-size: 0.9em;
@@ -52,6 +62,7 @@
             background-color: #ecf0f1;
             padding: 10px;
             border-radius: 5px;
+            transition: all 0.3s ease;
         }
         input[type="text"], select {
             width: calc(100% - 20px);
@@ -59,6 +70,11 @@
             margin: 5px 0;
             border: 1px solid #ccc;
             border-radius: 5px;
+            transition: border 0.3s;
+        }
+        input[type="text"]:focus, select:focus {
+            border: 1px solid #3498db;
+            outline: none;
         }
     </style>
 </head>
@@ -67,7 +83,7 @@
 <h1>Sistema de Manutenção de Equipamentos</h1>
 
 <h2>Adicionar Equipamento</h2>
-<select id="equipmentType">
+<select id="equipmentType" required>
     <option value="">Selecione o Tipo de Equipamento</option>
     <option value="TV">TV</option>
     <option value="Computador">Computador</option>
@@ -81,11 +97,11 @@
     <option value="Mouse">Mouse</option>
 </select>
 <div class="guide">* Selecione o tipo de equipamento.</div>
-<input type="text" id="machineNumber" placeholder="Número da Máquina">
+<input type="text" id="machineNumber" placeholder="Número da Máquina" required>
 <div class="guide">* Exemplo: 001, 002, etc.</div>
-<input type="text" id="tombNumber" placeholder="Número de Tombamento">
+<input type="text" id="tombNumber" placeholder="Número de Tombamento" required>
 <div class="guide">* Exemplo: T001, T002, etc.</div>
-<select id="sector">
+<select id="sector" required>
     <option value="">Selecione o Setor</option>
     <option value="Coordenação">Coordenação</option>
     <option value="Direção">Direção</option>
@@ -143,24 +159,21 @@
 </table>
 
 <script>
-    let osCounter = 1;  // Contador para o número da OS
+    let osCounter = 1; // Contador para o número da OS
 
     function saveEquipmentList() {
         localStorage.setItem('equipmentList', JSON.stringify(equipmentList));
-        localStorage.setItem('osCounter', osCounter);  // Salvar contador de OS
+        localStorage.setItem('osCounter', osCounter); // Salvar contador de OS
     }
 
     function loadEquipmentList() {
         const storedList = localStorage.getItem('equipmentList');
-        if (storedList) {
-            return JSON.parse(storedList);
-        }
-        return [];
+        return storedList ? JSON.parse(storedList) : [];
     }
 
-    const equipmentList = loadEquipmentList();  // Carrega do localStorage
-    osCounter = parseInt(localStorage.getItem('osCounter')) || 1;  // Carrega contador de OS
-    updateEquipmentTable();  // Atualiza a tabela com os dados carregados
+    const equipmentList = loadEquipmentList(); // Carrega do localStorage
+    osCounter = parseInt(localStorage.getItem('osCounter')) || 1; // Carrega contador de OS
+    updateEquipmentTable(); // Atualiza a tabela com os dados carregados
 
     function addEquipment() {
         const type = document.getElementById('equipmentType').value;
@@ -176,12 +189,12 @@
                 sector,
                 maintenanceHistory: [],
                 status: 'Ativo',
-                osNumber: null,  // Inicializa como nulo
-                maintenanceType: null  // Adicionando campo para tipo de manutenção
+                osNumber: null,
+                maintenanceType: null
             };
 
             equipmentList.push(equipment);
-            saveEquipmentList();  // Salva no localStorage
+            saveEquipmentList(); // Salva no localStorage
             updateEquipmentTable();
             clearInputs();
         } else {
@@ -205,17 +218,17 @@
                     <option value="">Selecione</option>
                     <option value="Preventiva">Preventiva</option>
                     <option value="Corretiva">Corretiva</option>
+                    <option value="Urgente">Urgente</option>
                 </select>
                 <div id="maintenanceDetails${index}" class="maintenance-details">
-                    <input type="date" id="date${index}">
-                    <input type="time" id="time${index}">
-                    <textarea id="details${index}" placeholder="Descrição do que foi feito"></textarea>
+                    <input type="date" id="date${index}" required>
+                    <input type="time" id="time${index}" required>
+                    <textarea id="details${index}" placeholder="Descrição da manutenção" required></textarea>
                     <button class="button" onclick="generateReport(${index})">Gerar Relatório</button>
                 </div>
             `;
 
-            row.insertCell(5).textContent = equipment.status + (equipment.osNumber ? ` (OS: ${equipment.osNumber})` : '');
-
+            row.insertCell(5).textContent = equipment.status || 'N/A';
             row.insertCell(6).innerHTML = `
                 <button class="button" onclick="printReport(${index})">Imprimir Relatório</button>
                 <button class="button" onclick="removeEquipment(${index})">Remover</button>
