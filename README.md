@@ -1,15 +1,17 @@
-<Sistema de Manuteção>
+<Sistema de Manuteção Eqipamentos de Informática>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Manutenção de Equipamentos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <style>
         body {
             font-family: 'Arial', sans-serif;
             margin: 20px;
             background-color: #f4f4f4;
             color: #333;
+            animation: fadeIn 0.5s ease;
         }
         h1, h2 {
             color: #34495e;
@@ -80,10 +82,10 @@
 </head>
 <body>
 
-<h1>Sistema de Manutenção de Equipamentos</h1>
+<h1 class="animate__animated animate__fadeInDown">Sistema de Manutenção de Equipamentos</h1>
 
-<h2>Adicionar Equipamento</h2>
-<select id="equipmentType" required>
+<h2 class="animate__animated animate__fadeIn">Adicionar Equipamento</h2>
+<select id="equipmentType" required class="animate__animated animate__fadeIn animate__delay-1s">
     <option value="">Selecione o Tipo de Equipamento</option>
     <option value="TV">TV</option>
     <option value="Computador">Computador</option>
@@ -97,11 +99,11 @@
     <option value="Mouse">Mouse</option>
 </select>
 <div class="guide">* Selecione o tipo de equipamento.</div>
-<input type="text" id="machineNumber" placeholder="Número da Máquina" required>
+<input type="text" id="machineNumber" placeholder="Número da Máquina" required class="animate__animated animate__fadeIn animate__delay-1s">
 <div class="guide">* Exemplo: 001, 002, etc.</div>
-<input type="text" id="tombNumber" placeholder="Número de Tombamento" required>
+<input type="text" id="tombNumber" placeholder="Número de Tombamento" required class="animate__animated animate__fadeIn animate__delay-1s">
 <div class="guide">* Exemplo: T001, T002, etc.</div>
-<select id="sector" required>
+<select id="sector" required class="animate__animated animate__fadeIn animate__delay-1s">
     <option value="">Selecione o Setor</option>
     <option value="Coordenação">Coordenação</option>
     <option value="Direção">Direção</option>
@@ -132,16 +134,16 @@
     <option value="Sala do Administrativo">Sala do Administrativo</option>
 </select>
 <div class="guide">* Selecione o setor ao qual o equipamento pertence.</div>
-<button class="button" onclick="addEquipment()">Adicionar Equipamento</button>
+<button class="button animate__animated animate__fadeIn animate__delay-1s" onclick="addEquipment()">Adicionar Equipamento</button>
 
-<h2>Pesquisar Serviços</h2>
-<input type="text" id="searchInput" placeholder="Buscar por OS, Tombamento ou Máquina">
-<button class="button" onclick="searchEquipment()">Pesquisar</button>
-<button class="button" onclick="showGeneralHistory()">Histórico Geral</button>
-<button class="button" onclick="printGeneralHistory()">Imprimir Histórico Geral</button>
+<h2 class="animate__animated animate__fadeIn">Pesquisar Serviços</h2>
+<input type="text" id="searchInput" placeholder="Buscar por OS, Tombamento ou Máquina" class="animate__animated animate__fadeIn animate__delay-1s">
+<button class="button animate__animated animate__fadeIn animate__delay-1s" onclick="searchEquipment()">Pesquisar</button>
+<button class="button animate__animated animate__fadeIn animate__delay-1s" onclick="showGeneralHistory()">Histórico Geral</button>
+<button class="button animate__animated animate__fadeIn animate__delay-1s" onclick="printGeneralHistory()">Imprimir Histórico Geral</button>
 
-<h2>Lista de Equipamentos</h2>
-<table id="equipmentTable">
+<h2 class="animate__animated animate__fadeIn">Lista de Equipamentos</h2>
+<table id="equipmentTable" class="animate__animated animate__fadeIn animate__delay-1s">
     <thead>
         <tr>
             <th>Tipo</th>
@@ -188,31 +190,30 @@
                 tombNumber,
                 sector,
                 maintenanceHistory: [],
-                status: 'Ativo',
-                osNumber: null,
-                maintenanceType: null
+                status: 'Inativo',
+                maintenanceType: ''
             };
 
             equipmentList.push(equipment);
-            saveEquipmentList(); // Salva no localStorage
+            saveEquipmentList();
             updateEquipmentTable();
             clearInputs();
+            alert('Equipamento adicionado com sucesso!');
         } else {
             alert('Por favor, preencha todos os campos.');
         }
     }
 
     function updateEquipmentTable(filteredList = equipmentList) {
-        const tableBody = document.getElementById('equipmentTable').getElementsByTagName('tbody')[0];
-        tableBody.innerHTML = '';
+        const tableBody = document.getElementById('equipmentTable').querySelector('tbody');
+        tableBody.innerHTML = ''; // Limpa a tabela antes de atualizar
 
         filteredList.forEach((equipment, index) => {
             const row = tableBody.insertRow();
-            row.insertCell(0).textContent = equipment.type;
-            row.insertCell(1).textContent = equipment.number;
-            row.insertCell(2).textContent = equipment.tombNumber;
-            row.insertCell(3).textContent = equipment.sector;
-
+            row.insertCell(0).textContent = equipment.type || 'N/A';
+            row.insertCell(1).textContent = equipment.number || 'N/A';
+            row.insertCell(2).textContent = equipment.tombNumber || 'N/A';
+            row.insertCell(3).textContent = equipment.sector || 'N/A';
             row.insertCell(4).innerHTML = `
                 <select onchange="updateMaintenanceType(${index}, this.value)">
                     <option value="">Selecione</option>
@@ -242,6 +243,7 @@
         equipmentList[index].maintenanceType = type;
         const detailsDiv = document.getElementById(`maintenanceDetails${index}`);
         detailsDiv.style.display = type ? 'block' : 'none';
+        detailsDiv.classList.add('animate__animated', 'animate__fadeIn');
     }
 
     function generateReport(index) {
@@ -408,7 +410,7 @@
             generalHistory = 'Nenhum registro de manutenção encontrado.';
         }
 
-        const printWindow = window.open('', '', 'width=600,height=400');
+        const printWindow = window.open('', '', 'width=300,height=200');
         printWindow.document.write('<pre>' + generalHistory + '</pre>');
         printWindow.document.close();
         printWindow.print();
