@@ -1,4 +1,4 @@
-<Sistema de Manuteção Eqipamentos de Informática>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -48,6 +48,7 @@
             cursor: pointer;
             border-radius: 5px;
             transition: background-color 0.3s, transform 0.2s;
+            margin-top: 10px;
         }
         .button:hover {
             background-color: #2980b9;
@@ -66,7 +67,7 @@
             border-radius: 5px;
             transition: all 0.3s ease;
         }
-        input[type="text"], select {
+        input[type="text"], select, input[type="date"], input[type="time"], textarea {
             width: calc(100% - 20px);
             padding: 10px;
             margin: 5px 0;
@@ -74,108 +75,126 @@
             border-radius: 5px;
             transition: border 0.3s;
         }
-        input[type="text"]:focus, select:focus {
+        input[type="text"]:focus, select:focus, input[type="date"]:focus, input[type="time"]:focus, textarea:focus {
             border: 1px solid #3498db;
             outline: none;
+        }
+        .page {
+            display: none;
+        }
+        .page.active {
+            display: block;
         }
     </style>
 </head>
 <body>
 
-<h1 class="animate__animated animate__fadeInDown">Sistema de Manutenção de Equipamentos</h1>
+<div id="cadastro-page" class="page active">
+    <h1 class="animate__animated animate__fadeInDown">Sistema de Manutenção de Equipamentos</h1>
+    <h2 class="animate__animated animate__fadeIn">Adicionar Equipamento</h2>
+    <select id="equipmentType" required class="animate__animated animate__fadeIn animate__delay-1s">
+        <option value="">Selecione o Tipo de Equipamento</option>
+        <option value="TV">TV</option>
+        <option value="Computador">Computador</option>
+        <option value="Chromebook">Chromebook</option>
+        <option value="Notgame">Notgame</option>
+        <option value="Minipc">Minipc</option>
+        <option value="Datashow">Datashow</option>
+        <option value="Impressora">Impressora</option>
+        <option value="Monitor">Monitor</option>
+        <option value="Teclado">Teclado</option>
+        <option value="Mouse">Mouse</option>
+    </select>
+    <div class="guide">* Selecione o tipo de equipamento.</div>
+    <input type="text" id="machineNumber" placeholder="Número da Máquina" required class="animate__animated animate__fadeIn animate__delay-1s">
+    <div class="guide">* Exemplo: 001, 002, etc.</div>
+    <input type="text" id="tombNumber" placeholder="Número de Tombamento" required class="animate__animated animate__fadeIn animate__delay-1s">
+    <div class="guide">* Exemplo: T001, T002, etc.</div>
+    <select id="sector" required class="animate__animated animate__fadeIn animate__delay-1s">
+        <option value="">Selecione o Setor</option>
+        <option value="Coordenação">Coordenação</option>
+        <option value="Direção">Direção</option>
+        <option value="Secretaria">Secretaria</option>
+        <option value="Sala dos Professores">Sala dos Professores</option>
+        <option value="Sala do Financeiro">Sala do Financeiro</option>
+        <option value="Recepção">Recepção</option>
+        <option value="Biblioteca">Biblioteca</option>
+        <option value="Sala de Inovação">Sala de Inovação</option>
+        <option value="Sala (Maker)">Sala (Maker)</option>
+        <option value="Sala 01">Sala 01</option>
+        <option value="Sala 02">Sala 02</option>
+        <option value="Sala 03">Sala 03</option>
+        <option value="Sala 04">Sala 04</option>
+        <option value="Sala 05">Sala 05</option>
+        <option value="Sala 06">Sala 06</option>
+        <option value="Sala 07">Sala 07</option>
+        <option value="Sala 08">Sala 08</option>
+        <option value="Sala 09">Sala 09</option>
+        <option value="Sala 10">Sala 10</option>
+        <option value="Sala 11">Sala 11</option>
+        <option value="Sala 12">Sala 12</option>
+        <option value="Auditório">Auditório</option>
+        <option value="Salão Escola 01">Salão Escola 01</option>
+        <option value="Salão Escola 02">Salão Escola 02</option>
+        <option value="Sala Cozinha Didática">Sala Cozinha Didática</option>
+        <option value="Sala de Vidro">Sala de Vidro</option>
+        <option value="Sala do Administrativo">Sala do Administrativo</option>
+    </select>
+    <div class="guide">* Selecione o setor ao qual o equipamento pertence.</div>
+    <button class="button animate__animated animate__fadeIn animate__delay-1s" onclick="addEquipment()">Adicionar Equipamento</button>
+    <button class="button animate__animated animate__fadeIn animate__delay-2s" onclick="showListPage()">Ver Lista de Equipamentos</button>
+</div>
 
-<h2 class="animate__animated animate__fadeIn">Adicionar Equipamento</h2>
-<select id="equipmentType" required class="animate__animated animate__fadeIn animate__delay-1s">
-    <option value="">Selecione o Tipo de Equipamento</option>
-    <option value="TV">TV</option>
-    <option value="Computador">Computador</option>
-    <option value="Chromebook">Chromebook</option>
-    <option value="Notgame">Notgame</option>
-    <option value="Minipc">Minipc</option>
-    <option value="Datashow">Datashow</option>
-    <option value="Impressora">Impressora</option>
-    <option value="Monitor">Monitor</option>
-    <option value="Teclado">Teclado</option>
-    <option value="Mouse">Mouse</option>
-</select>
-<div class="guide">* Selecione o tipo de equipamento.</div>
-<input type="text" id="machineNumber" placeholder="Número da Máquina" required class="animate__animated animate__fadeIn animate__delay-1s">
-<div class="guide">* Exemplo: 001, 002, etc.</div>
-<input type="text" id="tombNumber" placeholder="Número de Tombamento" required class="animate__animated animate__fadeIn animate__delay-1s">
-<div class="guide">* Exemplo: T001, T002, etc.</div>
-<select id="sector" required class="animate__animated animate__fadeIn animate__delay-1s">
-    <option value="">Selecione o Setor</option>
-    <option value="Coordenação">Coordenação</option>
-    <option value="Direção">Direção</option>
-    <option value="Secretaria">Secretaria</option>
-    <option value="Sala dos Professores">Sala dos Professores</option>
-    <option value="Sala do Financeiro">Sala do Financeiro</option>
-    <option value="Recepção">Recepção</option>
-    <option value="Biblioteca">Biblioteca</option>
-    <option value="Sala de Inovação">Sala de Inovação</option>
-    <option value="Sala (Maker)">Sala (Maker)</option>
-    <option value="Sala 01">Sala 01</option>
-    <option value="Sala 02">Sala 02</option>
-    <option value="Sala 03">Sala 03</option>
-    <option value="Sala 04">Sala 04</option>
-    <option value="Sala 05">Sala 05</option>
-    <option value="Sala 06">Sala 06</option>
-    <option value="Sala 07">Sala 07</option>
-    <option value="Sala 08">Sala 08</option>
-    <option value="Sala 09">Sala 09</option>
-    <option value="Sala 10">Sala 10</option>
-    <option value="Sala 11">Sala 11</option>
-    <option value="Sala 12">Sala 12</option>
-    <option value="Auditório">Auditório</option>
-    <option value="Salão Escola 01">Salão Escola 01</option>
-    <option value="Salão Escola 02">Salão Escola 02</option>
-    <option value="Sala Cozinha Didática">Sala Cozinha Didática</option>
-    <option value="Sala de Vidro">Sala de Vidro</option>
-    <option value="Sala do Administrativo">Sala do Administrativo</option>
-</select>
-<div class="guide">* Selecione o setor ao qual o equipamento pertence.</div>
-<button class="button animate__animated animate__fadeIn animate__delay-1s" onclick="addEquipment()">Adicionar Equipamento</button>
-
-<h2 class="animate__animated animate__fadeIn">Pesquisar Serviços</h2>
-<input type="text" id="searchInput" placeholder="Buscar por OS, Tombamento ou Máquina" class="animate__animated animate__fadeIn animate__delay-1s">
-<button class="button animate__animated animate__fadeIn animate__delay-1s" onclick="searchEquipment()">Pesquisar</button>
-<button class="button animate__animated animate__fadeIn animate__delay-1s" onclick="showGeneralHistory()">Histórico Geral</button>
-<button class="button animate__animated animate__fadeIn animate__delay-1s" onclick="printGeneralHistory()">Imprimir Histórico Geral</button>
-
-<h2 class="animate__animated animate__fadeIn">Lista de Equipamentos</h2>
-<table id="equipmentTable" class="animate__animated animate__fadeIn animate__delay-1s">
-    <thead>
-        <tr>
-            <th>Tipo</th>
-            <th>Número</th>
-            <th>Número de Tombamento</th>
-            <th>Setor</th>
-            <th>Tipo de Manutenção</th>
-            <th>Status</th>
-            <th>Ações</th>
-        </tr>
-    </thead>
-    <tbody>
-        <!-- Equipamentos serão adicionados aqui -->
-    </tbody>
-</table>
+<div id="lista-page" class="page">
+    <h1 class="animate__animated animate__fadeInDown">Lista de Equipamentos</h1>
+    <button class="button animate__animated animate__fadeIn animate__delay-1s" onclick="showCadastroPage()">Voltar ao Cadastro</button>
+    <h2 class="animate__animated animate__fadeIn">Pesquisar Serviços</h2>
+    <input type="text" id="searchInput" placeholder="Buscar por OS, Tombamento ou Máquina" class="animate__animated animate__fadeIn animate__delay-1s">
+    <button class="button animate__animated animate__fadeIn animate__delay-1s" onclick="searchEquipment()">Pesquisar</button>
+    <button class="button animate__animated animate__fadeIn animate__delay-1s" onclick="showGeneralHistory()">Histórico Geral</button>
+    <button class="button animate__animated animate__fadeIn animate__delay-1s" onclick="printGeneralHistory()">Imprimir Histórico Geral</button>
+    <h2 class="animate__animated animate__fadeIn">Lista de Equipamentos</h2>
+    <table id="equipmentTable" class="animate__animated animate__fadeIn animate__delay-1s">
+        <thead>
+            <tr>
+                <th>Tipo</th>
+                <th>Número</th>
+                <th>Número de Tombamento</th>
+                <th>Setor</th>
+                <th>Tipo de Manutenção</th>
+                <th>Status</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            </tbody>
+    </table>
+</div>
 
 <script>
-    let osCounter = 1; // Contador para o número da OS
+    let osCounter = parseInt(localStorage.getItem('osCounter')) || 1;
+    let equipmentList = loadEquipmentList();
+
+    function showListPage() {
+        document.getElementById('cadastro-page').classList.remove('active');
+        document.getElementById('lista-page').classList.add('active');
+        updateEquipmentTable();
+    }
+
+    function showCadastroPage() {
+        document.getElementById('lista-page').classList.remove('active');
+        document.getElementById('cadastro-page').classList.add('active');
+    }
 
     function saveEquipmentList() {
         localStorage.setItem('equipmentList', JSON.stringify(equipmentList));
-        localStorage.setItem('osCounter', osCounter); // Salvar contador de OS
+        localStorage.setItem('osCounter', osCounter);
     }
 
     function loadEquipmentList() {
         const storedList = localStorage.getItem('equipmentList');
         return storedList ? JSON.parse(storedList) : [];
     }
-
-    const equipmentList = loadEquipmentList(); // Carrega do localStorage
-    osCounter = parseInt(localStorage.getItem('osCounter')) || 1; // Carrega contador de OS
-    updateEquipmentTable(); // Atualiza a tabela com os dados carregados
 
     function addEquipment() {
         const type = document.getElementById('equipmentType').value;
@@ -196,7 +215,6 @@
 
             equipmentList.push(equipment);
             saveEquipmentList();
-            updateEquipmentTable();
             clearInputs();
             alert('Equipamento adicionado com sucesso!');
         } else {
@@ -206,7 +224,7 @@
 
     function updateEquipmentTable(filteredList = equipmentList) {
         const tableBody = document.getElementById('equipmentTable').querySelector('tbody');
-        tableBody.innerHTML = ''; // Limpa a tabela antes de atualizar
+        tableBody.innerHTML = '';
 
         filteredList.forEach((equipment, index) => {
             const row = tableBody.insertRow();
@@ -214,7 +232,9 @@
             row.insertCell(1).textContent = equipment.number || 'N/A';
             row.insertCell(2).textContent = equipment.tombNumber || 'N/A';
             row.insertCell(3).textContent = equipment.sector || 'N/A';
-            row.insertCell(4).innerHTML = `
+
+            const maintenanceCell = row.insertCell(4);
+            maintenanceCell.innerHTML = `
                 <select onchange="updateMaintenanceType(${index}, this.value)">
                     <option value="">Selecione</option>
                     <option value="Preventiva">Preventiva</option>
@@ -228,12 +248,16 @@
                     <button class="button" onclick="generateReport(${index})">Gerar Relatório</button>
                 </div>
             `;
+            const maintenanceSelect = maintenanceCell.querySelector('select');
+            maintenanceSelect.value = equipment.maintenanceType || '';
+            const detailsDiv = document.getElementById(`maintenanceDetails${index}`);
+            detailsDiv.style.display = equipment.maintenanceType ? 'block' : 'none';
 
             row.insertCell(5).textContent = equipment.status || 'N/A';
             row.insertCell(6).innerHTML = `
                 <button class="button" onclick="printReport(${index})">Imprimir Relatório</button>
                 <button class="button" onclick="removeEquipment(${index})">Remover</button>
-                <button class="button" onclick="showFullReport(${index})">Gerar Relatório</button>
+                <button class="button" onclick="showFullReport(${index})">Ver Relatório Completo</button>
                 <button class="button" onclick="showMaintenanceHistory(${index})">Histórico</button>
             `;
         });
@@ -244,6 +268,7 @@
         const detailsDiv = document.getElementById(`maintenanceDetails${index}`);
         detailsDiv.style.display = type ? 'block' : 'none';
         detailsDiv.classList.add('animate__animated', 'animate__fadeIn');
+        saveEquipmentList();
     }
 
     function generateReport(index) {
@@ -339,9 +364,11 @@
     }
 
     function removeEquipment(index) {
-        equipmentList.splice(index, 1);
-        saveEquipmentList();
-        updateEquipmentTable();
+        if (confirm('Tem certeza que deseja remover este equipamento?')) {
+            equipmentList.splice(index, 1);
+            saveEquipmentList();
+            updateEquipmentTable();
+        }
     }
 
     function clearInputs() {
@@ -353,9 +380,9 @@
 
     function searchEquipment() {
         const searchValue = document.getElementById('searchInput').value.toLowerCase();
-        const filteredList = equipmentList.filter(equipment => 
-            equipment.number.toLowerCase().includes(searchValue) || 
-            equipment.tombNumber.toLowerCase().includes(searchValue) || 
+        const filteredList = equipmentList.filter(equipment =>
+            equipment.number.toLowerCase().includes(searchValue) ||
+            equipment.tombNumber.toLowerCase().includes(searchValue) ||
             (equipment.osNumber && equipment.osNumber.toLowerCase().includes(searchValue))
         );
         updateEquipmentTable(filteredList);
